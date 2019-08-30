@@ -28,7 +28,7 @@ import ApolloClient from 'apollo-client'
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.extract(error)
+        const extracted = KeepfyErrorExtractor.extractFrom(error)
         
         if(extracted.type === 'INVALID_TOKEN'){
           // do redirect to login emit
@@ -56,7 +56,7 @@ const sentryForward = KeepfyErrorExtractor.forwardToSentry(Sentry)
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.extract(error)
+        const extracted = KeepfyErrorExtractor.extractFrom(error)
         
         sentryForward.captureIfNeeded(extracted, error)
 

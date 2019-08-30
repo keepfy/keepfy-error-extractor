@@ -1,6 +1,7 @@
 import {
     BackendMessagesMap,
     ErrorMessage,
+    LinkErrorResponse,
     TExtractFromError,
     TExtractMessageFromError,
     TGraphQLErrors
@@ -124,7 +125,7 @@ const extractFromGraphQLError = (graphQLErrors: TGraphQLErrors[]) => {
     return extractedBackend
 }
 
-export const extractMessageFromError: TExtractMessageFromError = error => {
+export const extractFromApollo: TExtractMessageFromError = error => {
 
     if(error.networkError) {
         return extractFromMessage(error.networkError.message)
@@ -136,4 +137,14 @@ export const extractMessageFromError: TExtractMessageFromError = error => {
 
     return extractFromMessage(error.message)
 }
+
+export const extractFrom = (
+    { graphQLErrors, networkError }: LinkErrorResponse
+) => extractFromApollo({
+    graphQLErrors: graphQLErrors || [],
+    networkError: networkError || null,
+    extraInfo: null,
+    name: '',
+    message: ''
+})
 
