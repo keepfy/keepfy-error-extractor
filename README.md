@@ -1,7 +1,7 @@
 # Keepfy error extractor
 
-A keepfy error handler/reporter package specific 
-for apollo clients
+A package that handles keepfy specific network & graphql
+errors for apollo clients
 
 
 ## Details
@@ -82,4 +82,3 @@ instead, we specify an adapter with the common sentry methods
 (available at the types file, look for `SentryAdapter`), so
 if your sentry passed to the forward call doesn't type check,
 just write your adapter for it.
-

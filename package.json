@@ -6,13 +6,14 @@
   "types": "./lib/index.d.ts",
   "author": "Gabriel Rohden",
   "license": "MIT",
+  "keywords": ["keepfy"],
   "scripts": {
     "build": "rm -rf ./lib/* && yarn lint && tsc",
-    "lint": "eslint 'src/**/*.ts?(x)'"
+    "lint": "eslint 'src/**/*.ts?(x)'",
+    "prepare": "yarn build"
   },
   "peerDependencies": {
     "apollo-client": "^2.5.1",
-    "fbemitter": "^2.1.1",
     "graphql": "^14.2.1"
   },
   "devDependencies": {
@@ -20,8 +21,8 @@
     "apollo-link-error": "1.1.11",
     "eslint": "5.15.3",
     "eslint-config-keepfy": "5.0.1",
-    "fbemitter": "2.1.1",
+    "eslint-plugin-import": "2.17.2",
     "typescript": "3.5.2",
-    "eslint-plugin-import": "2.17.2"
+    "yarn": "1.17.3"
   }
 }
