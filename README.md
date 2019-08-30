@@ -3,13 +3,16 @@
 A package that handles keepfy specific network & graphql
 errors for apollo clients
 
-
 ## Details
 
 This package wraps all our logic around server error 
 messages sent by keepfy backend, it maps network and
 graphql errors to a known format and dispatch
 it to sentry if needed.
+
+### Install
+
+`yarn add @keepfy/error-extractor`
 
 ### Usage
 
