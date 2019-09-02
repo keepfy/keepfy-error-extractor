@@ -49,7 +49,6 @@ export type Severity =
     | 'critical'
 
 export type SentryAdapter = {
-    Severity: { [key in Severity]: key }
     captureException(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         exception: any

@@ -34,7 +34,7 @@ const captureGQLErrors = (
 
         sentry.captureMessage(
             `${title} - ${gqlError.code}`,
-            sentry.Severity.error
+            'error'
         )
     })
 }
@@ -75,7 +75,7 @@ const captureNetworkErrors = (
 
     sentry.captureMessage(
         `${title} - Response status ${networkError.statusCode}`,
-        sentry.Severity.error
+        'error'
     )
 }
 
