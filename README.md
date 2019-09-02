@@ -27,9 +27,9 @@ import ApolloClient from 'apollo-client'
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.fromResponse(error)
+        const type = KeepfyErrorExtractor.fromResponse(error)
         
-        if(extracted === 'INVALID_TOKEN'){
+        if(type === 'INVALID_TOKEN'){
           // do redirect to login emit
         }
     }
@@ -55,11 +55,11 @@ const sentryForward = KeepfyErrorExtractor.forwardToSentry(Sentry)
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.fromResponse(error)
+        const type = KeepfyErrorExtractor.fromResponse(error)
         
-        sentryForward.captureIfNeeded(extracted, error)
+        sentryForward.captureIfNeeded(type, error)
 
-        if(extracted === 'INVALID_TOKEN'){
+        if(type === 'INVALID_TOKEN'){
           // do redirect to login emit
         }
     }
@@ -87,7 +87,7 @@ just write your adapter for it.
 
 ### Suggestions
 
-The package offers message suggestions (since not everyone will the strings) separated
+The package offers message suggestions (since not everyone will use the strings) separated
 you can easily get a suggestion like this:
 
 ```typescript
