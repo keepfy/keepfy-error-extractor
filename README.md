@@ -23,14 +23,13 @@ handler:
 import * as KeepfyErrorExtractor from 'keepfy-error-extractor'
 import ApolloClient from 'apollo-client'
 
-
 // ...
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.extractFrom(error)
+        const extracted = KeepfyErrorExtractor.fromResponse(error)
         
-        if(extracted.type === 'INVALID_TOKEN'){
+        if(extracted === 'INVALID_TOKEN'){
           // do redirect to login emit
         }
     }
@@ -56,11 +55,11 @@ const sentryForward = KeepfyErrorExtractor.forwardToSentry(Sentry)
 new ApolloClient({
     // ...
     onError: (error) => {
-        const extracted = KeepfyErrorExtractor.extractFrom(error)
+        const extracted = KeepfyErrorExtractor.fromResponse(error)
         
         sentryForward.captureIfNeeded(extracted, error)
 
-        if(extracted.type === 'INVALID_TOKEN'){
+        if(extracted === 'INVALID_TOKEN'){
           // do redirect to login emit
         }
     }
@@ -85,3 +84,27 @@ instead, we specify an adapter with the common sentry methods
 (available at the types file, look for `SentryAdapter`), so
 if your sentry passed to the forward call doesn't type check,
 just write your adapter for it.
+
+### Suggestions
+
+The package offers message suggestions (since not everyone will the strings) separated
+you can easily get a suggestion like this:
+
+```typescript
+import * as KeepfyErrorExtractor from '@keepfy/error-extractor'
+import { ApolloError } from 'apollo-client'
+
+const {
+    type,
+    message,
+    title
+} = KeepfyErrorExtractor.getSuggestion('UNKNOWN_ERROR')
+
+// or from apollo error response
+
+mutate(...options)
+   .catch((error: ApolloError) => {
+        const suggestion = KeepfyErrorExtractor.suggestionFromGraphQLError(error)
+         // do something with the error .message or .title
+   })
+```

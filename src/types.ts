@@ -6,6 +6,7 @@ export type ClientErrorTypes =
     | 'CONNECTION_FAILED'
     | 'UNKNOWN_ERROR'
     | 'EMAIL_NOT_CONFIRMED'
+    | 'EMAIL_ALREADY_EXISTS'
     | 'SCHEMA_UNKNOWN_FIELD'
 
 export type BackEndErrorTypes =
@@ -13,29 +14,32 @@ export type BackEndErrorTypes =
     | 'FORBIDDEN'
     | 'BUSINESS_ERROR' // general type, mostly ignored
 
-export type BackendMessagesMap = {
-    [key in BackEndErrorTypes]?: ErrorMessage & {
-        type: key
-    }
-}
-export type ErrorMessage = {
-    type: ClientErrorTypes | BackEndErrorTypes
+export type AllErrorTypes = ClientErrorTypes | BackEndErrorTypes
+
+export type MessageSuggestion = {
+    type: AllErrorTypes
     title: string
-    text: string
+    message: string
 }
 
-export type TGraphQLErrors = {
+export type SuggestionsMap = {
+    [key in AllErrorTypes]: MessageSuggestion & {
+        type: key,
+    }
+}
+
+export type GraphQLErrors = {
     code: BackEndErrorTypes
     message: string
     path: string[]
     properties: unknown
 }
 
-export type TExtractMessageFromError = (
+export type ExtractMessageFromError = (
     error: ApolloError
-) => ErrorMessage
+) => AllErrorTypes
 
-export type TExtractFromError = (message: string | null) => ErrorMessage
+export type ExtractFromError = (message: string | null) => AllErrorTypes
 
 export type LinkErrorResponse = ErrorResponse
 

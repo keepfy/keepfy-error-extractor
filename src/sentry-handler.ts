@@ -1,6 +1,6 @@
 import { ApolloError } from 'apollo-client'
 import { ErrorResponse } from 'apollo-link-error'
-import { ErrorMessage, SentryAdapter } from './types'
+import { AllErrorTypes, SentryAdapter } from './types'
 
 type NetworkError = {
     message?: string
@@ -17,7 +17,7 @@ type NetworkError = {
 const typeToCapture = [
     'UNKNOWN_ERROR',
     'SCHEMA_UNKNOWN_FIELD'
-] as ErrorMessage['type'][]
+] as AllErrorTypes[]
 
 const captureGQLErrors = (
     sentry: SentryAdapter,
@@ -80,10 +80,10 @@ const captureNetworkErrors = (
 }
 
 const captureIfNeeded = (sentry: SentryAdapter) => (
-    mappedError: ErrorMessage,
+    type: AllErrorTypes,
     error: ErrorResponse
 ) => {
-    if(!typeToCapture.includes(mappedError.type)) {
+    if(!typeToCapture.includes(type)) {
         return
     }
 
@@ -97,7 +97,7 @@ const captureIfNeeded = (sentry: SentryAdapter) => (
     try {
         sentry.setExtras({
             'Operation name': operationName,
-            'Mapped type': mappedError.type
+            'Mapped type': type
         })
 
         // We take the first one available (network or gql)

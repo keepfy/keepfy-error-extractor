@@ -1,103 +1,62 @@
 import {
-    BackendMessagesMap,
-    ErrorMessage,
-    LinkErrorResponse,
-    TExtractFromError,
-    TExtractMessageFromError,
-    TGraphQLErrors
+    AllErrorTypes,
+    ExtractFromError,
+    ExtractMessageFromError,
+    GraphQLErrors,
+    LinkErrorResponse
 } from './types'
 
-const keepfyOfflineMessage: ErrorMessage = {
-    type: 'SERVICE_OFFLINE',
-    title: 'Keepfy fora do ar',
-    text: 'O serviço pode estar enfrentando problemas no momento'
-}
-
-const keepfyConnectionFailed: ErrorMessage = {
-    type: 'CONNECTION_FAILED',
-    title: 'Erro de conexão',
-    text: 'Não foi possível conectar-se ao keepfy'
-}
-
-const keepfyUnknownField: ErrorMessage = {
-    type: 'SCHEMA_UNKNOWN_FIELD',
-    title: 'Erro de conexão',
-    text: 'Parece que seu app pode estar desatualizado'
-}
-
-const keepfyUnknownError: ErrorMessage = {
-    type: 'UNKNOWN_ERROR',
-    title: 'Erro desconhecido',
-    text: 'Erro não identificado, contate o administrador'
-}
-
-const keepfyNeedEmailConfirmation: ErrorMessage = {
-    type: 'EMAIL_NOT_CONFIRMED',
-    title: 'Verificação necessária',
-    text: 'Verifique seu e-mail para acessar o sistema'
-}
-
-const backendMessagesMap: BackendMessagesMap = {
-    AUTHENTICATION_FAILED: {
-        type: 'AUTHENTICATION_FAILED',
-        title: 'Ops!',
-        text: 'Autenticação de usuário falhou!'
-    },
-    FORBIDDEN: {
-        type: 'FORBIDDEN',
-        title: 'Não autorizado',
-        text: 'Você não possui permissão para realizar esta ação.'
-    }
-}
-
-const extractFromMessage: TExtractFromError = message => {
+const typeFromMessage: ExtractFromError = message => {
     if (message === null) {
-        return keepfyUnknownError
+        return 'UNKNOWN_ERROR'
     }
 
     // When response body is empty
     if(message.includes('JSON parse error: Unexpected identifier')) {
-        return keepfyUnknownError
+        return 'UNKNOWN_ERROR'
     }
 
     // When we receive a xml instead of a response
     if (message.includes('Unexpected token')) {
-        return keepfyOfflineMessage
+        return 'SERVICE_OFFLINE'
     }
 
     if (message.includes('Network request failed')) {
-        return keepfyConnectionFailed
+        return 'CONNECTION_FAILED'
     }
 
     // When graphql finds a wrong field sent
     if(message.includes('Unknown argument')) {
-        return keepfyUnknownField
+        return 'SCHEMA_UNKNOWN_FIELD'
     }
 
     // Not sure if we still get this one
     if(message.includes('Access denied')) {
-        return backendMessagesMap['FORBIDDEN']!
+        return 'FORBIDDEN'
+    }
+
+    if(message.includes('Key (email)') && message.includes('already exists')) {
+        return 'EMAIL_ALREADY_EXISTS'
     }
 
     if(message.includes('Verifique seu e-mail para acessar o sistema')) {
-        return keepfyNeedEmailConfirmation
+        return 'EMAIL_NOT_CONFIRMED'
     }
 
-    return {
-        type: 'UNKNOWN_ERROR',
-        title: 'Erro não identificado',
-        text: message
-    } as ErrorMessage
+    return 'UNKNOWN_ERROR'
 }
 
-const extractFromGraphQLError = (graphQLErrors: TGraphQLErrors[]) => {
+const fallbackTypes = [
+    'BUSINESS_ERROR',
+    'UNKNOWN_ERROR'
+] as AllErrorTypes[]
+
+export const fromGraphQLError = (graphQLErrors: GraphQLErrors[]) => {
     // Should we ignore other errors?
     const [error] = graphQLErrors
 
-    const extractedBackend = backendMessagesMap[error.code]
-
     // Fallback to message include calls
-    if(!extractedBackend) {
+    if(fallbackTypes.includes(error.code)) {
         const properties = error.properties as
             { message?: string } | null
 
@@ -105,42 +64,38 @@ const extractFromGraphQLError = (graphQLErrors: TGraphQLErrors[]) => {
             ? properties.message // new format
             : error.message // old format
 
-        const extracted = extractFromMessage(message)
-
         /*
          * We cannot trust BUSINESS_ERROR right now
-         * so we use the text mapped type + the
-         * backend sent message
+         * so we use the text mapped type
          */
         if(error.code === 'BUSINESS_ERROR') {
-            return {
-                ...extracted,
-                text: message
-            }
+            return typeFromMessage(message)
         }
 
-        return extracted
+        return error.code
     }
 
-    return extractedBackend
+    return error.code
 }
 
-export const extractFromApollo: TExtractMessageFromError = error => {
+export const fromApollo: ExtractMessageFromError = error => {
 
     if(error.networkError) {
-        return extractFromMessage(error.networkError.message)
+        return typeFromMessage(error.networkError.message)
+
     }
 
     if ((error.graphQLErrors || []).length) {
-        return extractFromGraphQLError(error.graphQLErrors as TGraphQLErrors[])
+        return fromGraphQLError(error.graphQLErrors as GraphQLErrors[])
     }
 
-    return extractFromMessage(error.message)
+    return typeFromMessage(error.message)
+
 }
 
-export const extractFrom = (
+export const fromResponse = (
     { graphQLErrors, networkError }: LinkErrorResponse
-) => extractFromApollo({
+) => fromApollo({
     graphQLErrors: graphQLErrors || [],
     networkError: networkError || null,
     extraInfo: null,
