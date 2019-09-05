@@ -5,6 +5,7 @@ import {
     GraphQLErrors,
     LinkErrorResponse
 } from './types'
+import { ErrorResponse } from 'apollo-link-error'
 
 const typeFromMessage: ExtractFromError = message => {
     if (message === null) {
@@ -103,6 +104,14 @@ export const fromResponse = (
     message: ''
 })
 
-export const extractProperties = <T extends keyof BackendErrorsWithProperties>(
+export const extractGQLProperties = <T extends keyof BackendErrorsWithProperties>(
     error: GraphQLErrors
 ) => error.properties as BackendErrorsWithProperties[T]
+
+export const extractProperties = <T extends keyof BackendErrorsWithProperties>(
+    error: ErrorResponse
+) => {
+    const gqlErrors = error.graphQLErrors as GraphQLErrors[]
+
+    return extractGQLProperties<T>(gqlErrors[0])
+}
