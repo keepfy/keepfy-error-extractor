@@ -1,9 +1,13 @@
 {
   "name": "@keepfy/error-extractor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An error extractor package for keepfy frontend apps",
   "main": "lib/index.js",
+  "typings": "./lib/index.d.ts",
   "types": "./lib/index.d.ts",
+  "typescript": {
+    "definition": "./lib/index.d.ts"
+  },
   "author": "Gabriel Rohden",
   "license": "MIT",
   "keywords": ["keepfy"],
