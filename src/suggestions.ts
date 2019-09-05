@@ -1,5 +1,10 @@
-import { AllErrorTypes, GraphQLErrors, SuggestionsMap } from './types'
+import { GraphQLErrors, SuggestionsMap } from './types'
 import { fromGraphQLError } from './error'
+
+const unknownError = {
+    title: 'Erro desconhecido',
+    message: 'Erro não identificado, contate o administrador'
+}
 
 const suggestions: SuggestionsMap = {
     SERVICE_OFFLINE: {
@@ -19,8 +24,7 @@ const suggestions: SuggestionsMap = {
     },
     UNKNOWN_ERROR: {
         type: 'UNKNOWN_ERROR',
-        title: 'Erro desconhecido',
-        message: 'Erro não identificado, contate o administrador'
+        ...unknownError
     },
     BUSINESS_ERROR: {
         type: 'BUSINESS_ERROR',
@@ -46,11 +50,36 @@ const suggestions: SuggestionsMap = {
         type: 'FORBIDDEN',
         title: 'Não autorizado',
         message: 'Você não possui permissão para realizar esta ação.'
+    },
+    ENTITY_NOT_FOUND: {
+        type: 'ENTITY_NOT_FOUND',
+        title: 'Entidade não encontrada',
+        message: 'Tente novamente'
+    },
+    INTERNAL_SERVER_ERROR: {
+        type: 'INTERNAL_SERVER_ERROR',
+        ...unknownError
+    },
+    INVALID_INPUT: {
+        type: 'INVALID_INPUT',
+        title: 'Campo inválido',
+        message: 'Um ou mais campos inválidos'
+    },
+    INVALID_SUBSCRIPTION: {
+        type: 'INVALID_SUBSCRIPTION',
+        title: 'Plano não existente',
+        message: 'Esta conta não possui um plano vinculado, contate o administrador'
+    },
+    ENTITY_IS_STILL_REFERENCED: {
+        type: 'ENTITY_IS_STILL_REFERENCED',
+        title: 'Entidade referênciada',
+        message: 'Não é possivel realizar a operação, entidade ainda possui vínculos'
     }
 }
 
-export const getSuggestion = (code: AllErrorTypes) =>
-    suggestions[code] || suggestions[code]
+export const getSuggestion = <
+    T extends keyof SuggestionsMap = keyof SuggestionsMap
+>(code: T) => suggestions[code]! as SuggestionsMap[T]
 
 export const suggestionFromGraphQLError = (graphQLErrors: GraphQLErrors[]) => {
     const type = fromGraphQLError(graphQLErrors)
@@ -64,13 +93,12 @@ export const suggestionFromGraphQLError = (graphQLErrors: GraphQLErrors[]) => {
         : error.message // old format
 
     // See error.ts extract from apollo fn
-    if(error.code === 'BUSINESS_ERROR') {
+    if(message) {
         return {
             ...extracted,
-            message: message
+            message
         }
     }
 
     return extracted
 }
-

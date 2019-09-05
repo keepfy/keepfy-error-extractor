@@ -9,10 +9,25 @@ export type ClientErrorTypes =
     | 'EMAIL_ALREADY_EXISTS'
     | 'SCHEMA_UNKNOWN_FIELD'
 
+export type BackendErrorsWithProperties = {
+    ENTITY_IS_STILL_REFERENCED: {
+        primaryKey: {
+            [index: string]: string
+        },
+        entity: string,
+        referencedBy: string
+    }
+}
+
 export type BackEndErrorTypes =
     | 'AUTHENTICATION_FAILED'
     | 'FORBIDDEN'
+    | 'INVALID_SUBSCRIPTION'
+    | 'ENTITY_NOT_FOUND'
+    | 'INVALID_INPUT'
+    | 'INTERNAL_SERVER_ERROR'
     | 'BUSINESS_ERROR' // general type, mostly ignored
+    | keyof BackendErrorsWithProperties
 
 export type AllErrorTypes = ClientErrorTypes | BackEndErrorTypes
 
@@ -24,7 +39,7 @@ export type MessageSuggestion = {
 
 export type SuggestionsMap = {
     [key in AllErrorTypes]: MessageSuggestion & {
-        type: key,
+        type: key
     }
 }
 

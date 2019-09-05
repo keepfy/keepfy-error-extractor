@@ -1,5 +1,5 @@
 import {
-    AllErrorTypes,
+    AllErrorTypes, BackendErrorsWithProperties,
     ExtractFromError,
     ExtractMessageFromError,
     GraphQLErrors,
@@ -103,3 +103,6 @@ export const fromResponse = (
     message: ''
 })
 
+export const extractProperties = <T extends keyof BackendErrorsWithProperties>(
+    error: GraphQLErrors
+) => error.properties as BackendErrorsWithProperties[T]

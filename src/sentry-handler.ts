@@ -16,7 +16,9 @@ type NetworkError = {
 
 const typeToCapture = [
     'UNKNOWN_ERROR',
-    'SCHEMA_UNKNOWN_FIELD'
+    'SCHEMA_UNKNOWN_FIELD',
+    'INVALID_SUBSCRIPTION',
+    'INVALID_INPUT'
 ] as AllErrorTypes[]
 
 const captureGQLErrors = (
