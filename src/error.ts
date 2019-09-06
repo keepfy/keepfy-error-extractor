@@ -105,11 +105,11 @@ export const fromResponse = (
 })
 
 export const extractGQLProperties = <T extends keyof BackendErrorsWithProperties>(
-    error: GraphQLErrors
+    error: Pick<GraphQLErrors, 'properties'>
 ) => error.properties as BackendErrorsWithProperties[T]
 
 export const extractProperties = <T extends keyof BackendErrorsWithProperties>(
-    error: ErrorResponse
+    error: Pick<ErrorResponse, 'graphQLErrors'>
 ) => {
     const gqlErrors = error.graphQLErrors as GraphQLErrors[]
 
