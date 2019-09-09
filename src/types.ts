@@ -43,11 +43,22 @@ export type SuggestionsMap = {
     }
 }
 
-export type GraphQLErrors = {
+export type GraphQLError = {
     code: BackEndErrorTypes
     message: string
     path: string[]
     properties: unknown
+}
+
+export type RawGraphQLError = {
+    code: string
+    message: string
+    path: string[]
+    properties: unknown
+}
+
+export type ApolloErrorWithProps = Omit<ApolloError, 'graphQLErrors'> & {
+    graphQLErrors: Array<RawGraphQLError & { properties: unknown }>
 }
 
 export type ExtractMessageFromError = (

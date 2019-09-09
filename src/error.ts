@@ -1,11 +1,14 @@
 import {
-    AllErrorTypes, BackendErrorsWithProperties,
+    AllErrorTypes,
+    ApolloErrorWithProps,
+    BackendErrorsWithProperties,
     ExtractFromError,
     ExtractMessageFromError,
-    GraphQLErrors,
+    GraphQLError,
     LinkErrorResponse
 } from './types'
 import { ErrorResponse } from 'apollo-link-error'
+import { isApolloError } from 'apollo-client'
 
 const typeFromMessage: ExtractFromError = message => {
     if (message === null) {
@@ -52,7 +55,7 @@ const fallbackTypes = [
     'UNKNOWN_ERROR'
 ] as AllErrorTypes[]
 
-export const fromGraphQLError = (graphQLErrors: GraphQLErrors[]) => {
+export const fromGraphQLError = (graphQLErrors: GraphQLError[]) => {
     // Should we ignore other errors?
     const [error] = graphQLErrors
 
@@ -79,6 +82,18 @@ export const fromGraphQLError = (graphQLErrors: GraphQLErrors[]) => {
     return error.code
 }
 
+export function isApolloWithProps(error: Error): error is ApolloErrorWithProps {
+    if (isApolloError(error)) {
+        const [gqlError] = error.graphQLErrors
+
+        if (gqlError) {
+            return 'properties' in gqlError
+        }
+    }
+
+    return false
+}
+
 export const fromApollo: ExtractMessageFromError = error => {
 
     if(error.networkError) {
@@ -87,7 +102,7 @@ export const fromApollo: ExtractMessageFromError = error => {
     }
 
     if ((error.graphQLErrors || []).length) {
-        return fromGraphQLError(error.graphQLErrors as GraphQLErrors[])
+        return fromGraphQLError(error.graphQLErrors as GraphQLError[])
     }
 
     return typeFromMessage(error.message)
@@ -105,13 +120,13 @@ export const fromResponse = (
 })
 
 export const extractGQLProperties = <T extends keyof BackendErrorsWithProperties>(
-    error: Pick<GraphQLErrors, 'properties'>
+    error: Pick<GraphQLError, 'properties'>
 ) => error.properties as BackendErrorsWithProperties[T]
 
 export const extractProperties = <T extends keyof BackendErrorsWithProperties>(
     error: Pick<ErrorResponse, 'graphQLErrors'>
 ) => {
-    const gqlErrors = error.graphQLErrors as GraphQLErrors[]
+    const gqlErrors = error.graphQLErrors as GraphQLError[]
 
     return extractGQLProperties<T>(gqlErrors[0])
 }
