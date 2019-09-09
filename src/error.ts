@@ -55,7 +55,7 @@ const fallbackTypes = [
     'UNKNOWN_ERROR'
 ] as AllErrorTypes[]
 
-export const fromGraphQLError = (graphQLErrors: GraphQLError[]) => {
+export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => {
     // Should we ignore other errors?
     const [error] = graphQLErrors
 

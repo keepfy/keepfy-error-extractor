@@ -50,15 +50,10 @@ export type GraphQLError = {
     properties: unknown
 }
 
-export type RawGraphQLError = {
-    code: string
-    message: string
-    path: string[]
-    properties: unknown
-}
+export type RawGraphQLError = ApolloError['graphQLErrors'][number]
 
 export type ApolloErrorWithProps = Omit<ApolloError, 'graphQLErrors'> & {
-    graphQLErrors: Array<RawGraphQLError & { properties: unknown }>
+    graphQLErrors: ReadonlyArray<RawGraphQLError & { properties: unknown }>
 }
 
 export type ExtractMessageFromError = (

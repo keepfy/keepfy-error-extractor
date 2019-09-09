@@ -1,4 +1,4 @@
-import { GraphQLError, SuggestionsMap } from './types'
+import { RawGraphQLError, SuggestionsMap } from './types'
 import { fromGraphQLError } from './error'
 
 const unknownError = {
@@ -81,7 +81,9 @@ export const getSuggestion = <
     T extends keyof SuggestionsMap = keyof SuggestionsMap
 >(code: T) => suggestions[code]! as SuggestionsMap[T]
 
-export const suggestionFromGraphQLError = (graphQLErrors: GraphQLError[]) => {
+export const suggestionFromGraphQLError = (
+    graphQLErrors: ReadonlyArray<RawGraphQLError>
+) => {
     const type = fromGraphQLError(graphQLErrors)
 
     // Should we ignore other errors?
