@@ -83,8 +83,8 @@ const suggestions: SuggestionsMap = {
         type: 'DUPLICATED_ENTITY',
         title: 'Entidade duplicada',
         message: [
-            'Um ou mais campos unicos informados',
-            'ja estão cadastrados no sistema'
+            'Um ou mais campos únicos informados',
+            'já estão cadastrados no sistema'
         ].join(' ')
     }
 }
