@@ -16,6 +16,11 @@ export type BackendErrorsWithProperties = {
         },
         entity: string,
         referencedBy: string
+    },
+    DUPLICATED_ENTITY: {
+        keys: {
+            [key: string] : string
+        }
     }
 }
 

@@ -28,8 +28,11 @@ const suggestions: SuggestionsMap = {
     },
     BUSINESS_ERROR: {
         type: 'BUSINESS_ERROR',
-        title: 'Erro desconhecido',
-        message: 'Erro não identificado, contate o administrador'
+        ...unknownError
+    },
+    INTERNAL_SERVER_ERROR: {
+        type: 'INTERNAL_SERVER_ERROR',
+        ...unknownError
     },
     EMAIL_NOT_CONFIRMED: {
         type: 'EMAIL_NOT_CONFIRMED',
@@ -61,10 +64,6 @@ const suggestions: SuggestionsMap = {
         title: 'Entidade não encontrada',
         message: 'Tente novamente'
     },
-    INTERNAL_SERVER_ERROR: {
-        type: 'INTERNAL_SERVER_ERROR',
-        ...unknownError
-    },
     INVALID_INPUT: {
         type: 'INVALID_INPUT',
         title: 'Campo inválido',
@@ -77,8 +76,16 @@ const suggestions: SuggestionsMap = {
     },
     ENTITY_IS_STILL_REFERENCED: {
         type: 'ENTITY_IS_STILL_REFERENCED',
-        title: 'Entidade referênciada',
+        title: 'Entidade referenciada',
         message: 'Não é possivel realizar a operação, entidade ainda possui vínculos'
+    },
+    DUPLICATED_ENTITY: {
+        type: 'DUPLICATED_ENTITY',
+        title: 'Entidade duplicada',
+        message: [
+            'Um ou mais campos únicos informados',
+            'já estão cadastrados no sistema'
+        ].join(' ')
     }
 }
 
