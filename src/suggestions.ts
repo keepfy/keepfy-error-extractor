@@ -51,6 +51,11 @@ const suggestions: SuggestionsMap = {
         title: 'Não autorizado',
         message: 'Você não possui permissão para realizar esta ação.'
     },
+    INVALID_SESSION: {
+        type: 'INVALID_SESSION',
+        title: 'Conta desconectada',
+        message: 'Realize novamente o seu login'
+    },
     ENTITY_NOT_FOUND: {
         type: 'ENTITY_NOT_FOUND',
         title: 'Entidade não encontrada',

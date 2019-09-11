@@ -22,6 +22,7 @@ export type BackendErrorsWithProperties = {
 export type BackEndErrorTypes =
     | 'AUTHENTICATION_FAILED'
     | 'FORBIDDEN'
+    | 'INVALID_SESSION'
     | 'INVALID_SUBSCRIPTION'
     | 'ENTITY_NOT_FOUND'
     | 'INVALID_INPUT'
