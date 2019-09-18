@@ -32,6 +32,7 @@ export type BackEndErrorTypes =
     | 'ENTITY_NOT_FOUND'
     | 'INVALID_INPUT'
     | 'INTERNAL_SERVER_ERROR'
+    | 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH'
     | 'BUSINESS_ERROR' // general type, mostly ignored
     | keyof BackendErrorsWithProperties
 

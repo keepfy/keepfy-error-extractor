@@ -47,6 +47,11 @@ const typeFromMessage: ExtractFromError = message => {
         return 'EMAIL_NOT_CONFIRMED'
     }
 
+    // When we try to bind an inactive employee on something
+    if(message.includes('Could not find any entity of type "Employee" matching')) {
+        return 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH'
+    }
+
     return 'UNKNOWN_ERROR'
 }
 

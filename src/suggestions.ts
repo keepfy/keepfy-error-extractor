@@ -86,7 +86,13 @@ const suggestions: SuggestionsMap = {
             'Um ou mais campos únicos informados',
             'já estão cadastrados no sistema'
         ].join(' ')
+    },
+    EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH: {
+        type: 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH',
+        title: 'Funcionário inativo',
+        message: 'Esse funcionário não está ativo nessa filial'
     }
+
 }
 
 export const getSuggestion = <
