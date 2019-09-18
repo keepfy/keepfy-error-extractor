@@ -16,7 +16,7 @@ const typeFromMessage: ExtractFromError = message => {
     }
 
     // When response body is empty
-    if(message.includes('JSON parse error: Unexpected identifier')) {
+    if (message.includes('JSON parse error: Unexpected identifier')) {
         return 'UNKNOWN_ERROR'
     }
 
@@ -30,25 +30,25 @@ const typeFromMessage: ExtractFromError = message => {
     }
 
     // When graphql finds a wrong field sent
-    if(message.includes('Unknown argument')) {
+    if (message.includes('Unknown argument')) {
         return 'SCHEMA_UNKNOWN_FIELD'
     }
 
     // Not sure if we still get this one
-    if(message.includes('Access denied')) {
+    if (message.includes('Access denied')) {
         return 'FORBIDDEN'
     }
 
-    if(message.includes('Key (email)') && message.includes('already exists')) {
+    if (message.includes('Key (email)') && message.includes('already exists')) {
         return 'EMAIL_ALREADY_EXISTS'
     }
 
-    if(message.includes('Verifique seu e-mail para acessar o sistema')) {
+    if (message.includes('Verifique seu e-mail para acessar o sistema')) {
         return 'EMAIL_NOT_CONFIRMED'
     }
 
     // When we try to bind an inactive employee on something
-    if(message.includes('Could not find any entity of type "Employee" matching')) {
+    if (message.includes('Could not find any entity of type "Employee" matching')) {
         return 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH'
     }
 
@@ -57,7 +57,8 @@ const typeFromMessage: ExtractFromError = message => {
 
 const fallbackTypes = [
     'BUSINESS_ERROR',
-    'UNKNOWN_ERROR'
+    'UNKNOWN_ERROR',
+    'ENTITY_NOT_FOUND'
 ] as AllErrorTypes[]
 
 export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => {
@@ -65,7 +66,7 @@ export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => 
     const [error] = graphQLErrors
 
     // Fallback to message include calls
-    if(fallbackTypes.includes(error.code)) {
+    if (fallbackTypes.includes(error.code)) {
         const properties = error.properties as
             { message?: string } | null
 
@@ -74,10 +75,10 @@ export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => 
             : error.message // old format
 
         /*
-         * We cannot trust BUSINESS_ERROR right now
+         * We cannot trust BUSINESS_ERROR or ENTITY_NOT_FOUND right now
          * so we use the text mapped type
          */
-        if(error.code === 'BUSINESS_ERROR') {
+        if (error.code === 'BUSINESS_ERROR' || error.code === 'ENTITY_NOT_FOUND') {
             return typeFromMessage(message)
         }
 
@@ -101,7 +102,7 @@ export function isApolloWithProps(error: Error): error is ApolloErrorWithProps {
 
 export const fromApollo: ExtractMessageFromError = error => {
 
-    if(error.networkError) {
+    if (error.networkError) {
         return typeFromMessage(error.networkError.message)
 
     }
