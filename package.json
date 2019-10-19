@@ -12,9 +12,9 @@
   "license": "MIT",
   "keywords": ["keepfy"],
   "scripts": {
-    "build": "rm -rf ./lib/* && yarn lint && tsc",
+    "build": "tsc",
     "lint": "eslint 'src/**/*.ts?(x)'",
-    "prepare": "yarn build"
+    "prepare": "rm -rf ./lib/* && yarn lint && yarn build"
   },
   "peerDependencies": {
     "apollo-client": "^2.5.1",
