@@ -52,21 +52,26 @@ const typeFromMessage: ExtractFromError = message => {
         return 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH'
     }
 
+    // eslint-disable-next-line max-len
+    if (message.includes('Não é possível finalizar uma solicitação de serviço se ela possui uma ordem de serviço aberta')) {
+        return 'CANNOT_FINISH_REQUEST_WITH_ORDER'
+    }
+
     return 'UNKNOWN_ERROR'
 }
 
-const fallbackTypes = [
+const fallbackTypes: AllErrorTypes[] = [
     'BUSINESS_ERROR',
     'UNKNOWN_ERROR',
     'ENTITY_NOT_FOUND'
-] as AllErrorTypes[]
+]
 
 export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => {
     // Should we ignore other errors?
     const [error] = graphQLErrors
 
     // Fallback to message include calls
-    if (fallbackTypes.includes(error.code)) {
+    if (fallbackTypes.find(code => code === error.code)) {
         const properties = error.properties as
             { message?: string } | null
 
@@ -82,10 +87,10 @@ export const fromGraphQLError = (graphQLErrors: ReadonlyArray<GraphQLError>) => 
             return typeFromMessage(message)
         }
 
-        return error.code
+        return error.code as AllErrorTypes
     }
 
-    return error.code
+    return error.code as AllErrorTypes
 }
 
 export function isApolloWithProps(error: Error): error is ApolloErrorWithProps {
