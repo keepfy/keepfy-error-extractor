@@ -8,6 +8,7 @@ export type ClientErrorTypes =
     | 'EMAIL_NOT_CONFIRMED'
     | 'EMAIL_ALREADY_EXISTS'
     | 'SCHEMA_UNKNOWN_FIELD'
+    | 'CANNOT_FINISH_REQUEST_WITH_ORDER'
 
 export type BackendErrorsWithProperties = {
     ENTITY_IS_STILL_REFERENCED: {
@@ -51,16 +52,14 @@ export type SuggestionsMap = {
 }
 
 export type GraphQLError = {
-    code: BackEndErrorTypes
+    code: string
     message: string
     path: string[]
     properties: unknown
 }
 
-export type RawGraphQLError = ApolloError['graphQLErrors'][number]
-
 export type ApolloErrorWithProps = Omit<ApolloError, 'graphQLErrors'> & {
-    graphQLErrors: ReadonlyArray<RawGraphQLError & { properties: unknown }>
+    graphQLErrors: ReadonlyArray<GraphQLError & { properties: unknown }>
 }
 
 export type ExtractMessageFromError = (

@@ -1,4 +1,4 @@
-import { RawGraphQLError, SuggestionsMap } from './types'
+import { GraphQLError, SuggestionsMap } from './types'
 import { fromGraphQLError } from './error'
 
 const unknownError = {
@@ -87,6 +87,14 @@ const suggestions: SuggestionsMap = {
             'já estão cadastrados no sistema'
         ].join(' ')
     },
+    CANNOT_FINISH_REQUEST_WITH_ORDER: {
+        type: 'CANNOT_FINISH_REQUEST_WITH_ORDER',
+        title: 'O.S. vinculada pendente',
+        message: [
+            'Não é possível finalizar uma solicitação de',
+            'serviço se ela possui uma ordem de serviço aberta'
+        ].join(' ')
+    },
     EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH: {
         type: 'EMPLOYEE_INACTIVE_ON_CURRENT_BRANCH',
         title: 'Funcionário inativo',
@@ -100,7 +108,7 @@ export const getSuggestion = <
 >(code: T) => suggestions[code]! as SuggestionsMap[T]
 
 export const suggestionFromGraphQLError = (
-    graphQLErrors: ReadonlyArray<RawGraphQLError>
+    graphQLErrors: ReadonlyArray<GraphQLError>
 ) => {
     const type = fromGraphQLError(graphQLErrors)
 
