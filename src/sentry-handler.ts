@@ -18,7 +18,8 @@ const typeToCapture = [
     'UNKNOWN_ERROR',
     'SCHEMA_UNKNOWN_FIELD',
     'INVALID_SUBSCRIPTION',
-    'INVALID_INPUT'
+    'INVALID_INPUT',
+    'INTERNAL_SERVER_ERROR'
 ] as AllErrorTypes[]
 
 const captureGQLErrors = (
