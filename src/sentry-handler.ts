@@ -1,8 +1,32 @@
 import { ApolloError } from 'apollo-client'
 import { ErrorResponse } from 'apollo-link-error'
-import { AllErrorTypes, SentryAdapter } from './types'
+import { AllErrorTypes } from './types'
 
-type NetworkError = {
+export type Severity =
+    | 'fatal'
+    | 'error'
+    | 'warning'
+    | 'log'
+    | 'info'
+    | 'debug'
+    | 'critical'
+
+export type SentryAdapter = {
+    captureException(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        exception: any
+    ): string
+    setExtras(extras: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [key: string]: any
+    }): void
+    captureMessage(
+        message: string,
+        level?: Severity
+    ): string
+}
+
+export type NetworkError = {
     message?: string
     statusCode: number
     result?: {
@@ -14,12 +38,12 @@ type NetworkError = {
     }
 }
 
-const typeToCapture = [
+const typeToCapture: AllErrorTypes[] = [
     'UNKNOWN_ERROR',
     'SCHEMA_UNKNOWN_FIELD',
     'INVALID_SUBSCRIPTION',
     'INVALID_INPUT'
-] as AllErrorTypes[]
+]
 
 const captureGQLErrors = (
     sentry: SentryAdapter,
