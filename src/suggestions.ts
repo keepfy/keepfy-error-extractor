@@ -1,7 +1,11 @@
 import { ApolloError } from 'apollo-client'
-import { KeepfyError, KeepfyErrorTrusted, defaultKeepfyErrorTrusted } from './types'
+import {
+    defaultKeepfyErrorTrusted,
+    IKeepfyError,
+    IKeepfyErrorTrusted
+} from './types'
 
-const clientErrorFromMessage = (message: string): KeepfyErrorTrusted => {
+const clientErrorFromMessage = (message: string): IKeepfyErrorTrusted => {
     if (message.includes('Unexpected token')) {
         return {
             type: 'SERVICE_OFFLINE',
@@ -29,10 +33,9 @@ const clientErrorFromMessage = (message: string): KeepfyErrorTrusted => {
 
 export const suggestionFromGraphQLError = (
     graphQLError: ApolloError
-): KeepfyErrorTrusted => {
-
+): IKeepfyErrorTrusted => {
     if ('isTrusted' in graphQLError) {
-        const keepfyError = graphQLError as KeepfyError
+        const keepfyError = graphQLError as IKeepfyError
 
         return {
             type: keepfyError.code,

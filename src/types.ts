@@ -1,4 +1,4 @@
-import { ApolloError } from "apollo-client"
+import { ApolloError } from 'apollo-client'
 
 export type KeepfyErrorCode =
     | 'FORBIDDEN'
@@ -19,7 +19,7 @@ export type KeepfyErrorCode =
     | 'BUSINESS_ERROR'
     | 'INVALID_INPUT'
 
-export interface KeepfyError extends ApolloError {
+export interface IKeepfyError extends ApolloError {
     message: string
     code: KeepfyErrorCode
     isNext: boolean | undefined
@@ -33,12 +33,12 @@ export type ClientErrorCode =
 
 export type AllErrorTypes = KeepfyErrorCode | ClientErrorCode
 
-export interface KeepfyErrorTrusted {
+export interface IKeepfyErrorTrusted {
     type: AllErrorTypes
     message: string
 }
 
-export const defaultKeepfyErrorTrusted: KeepfyErrorTrusted = {
+export const defaultKeepfyErrorTrusted: IKeepfyErrorTrusted = {
     type: 'UNKNOWN_ERROR',
     message: 'Ops! Ocorreu um erro, contate o administrador'
 }

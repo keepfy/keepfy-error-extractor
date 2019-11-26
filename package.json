@@ -24,9 +24,9 @@
     "apollo-client": "2.5.1",
     "apollo-link-error": "1.1.11",
     "eslint": "5.15.3",
-    "eslint-config-keepfy": "5.0.1",
+    "eslint-config-keepfy": "6.0.0",
     "eslint-plugin-import": "2.17.2",
-    "typescript": "3.5.2",
+    "typescript": "3.7.2",
     "yarn": "1.17.3"
   }
 }
