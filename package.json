@@ -1,6 +1,6 @@
 {
   "name": "@keepfy/error-extractor",
-  "version": "1.3.4",
+  "version": "2.0.0",
   "description": "An error extractor package for keepfy frontend apps",
   "main": "lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "peerDependencies": {
     "apollo-client": "^2.5.1",
-    "graphql": "^14.2.1"
+    "graphql": "^14.5.8"
   },
   "devDependencies": {
     "apollo-client": "2.5.1",
@@ -28,5 +28,8 @@
     "eslint-plugin-import": "2.17.2",
     "typescript": "3.7.2",
     "yarn": "1.17.3"
+  },
+  "dependencies": {
+    "graphql": "^14.5.8"
   }
 }
