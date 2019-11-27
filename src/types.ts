@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-client'
+import { GraphQLError } from 'graphql'
 
 export type KeepfyErrorCode =
     | 'FORBIDDEN'
@@ -19,24 +19,26 @@ export type KeepfyErrorCode =
     | 'BUSINESS_ERROR'
     | 'INVALID_INPUT'
 
-export interface IKeepfyError extends ApolloError {
+export interface IKeepfyError {
     message: string
     code: KeepfyErrorCode
-    isNext: boolean | undefined
+    isTrusted?: boolean | undefined
 }
 
 export type ClientErrorCode =
     | 'UNKNOWN_ERROR'
     | 'SCHEMA_UNKNOWN_FIELD'
     | 'CONNECTION_FAILED'
-    | 'SERVICE_OFFLINE'
 
 export type AllErrorTypes = KeepfyErrorCode | ClientErrorCode
 
 export interface IKeepfyErrorTrusted {
     type: AllErrorTypes
     message: string
+    isClientFault?: boolean
 }
+
+export type KeepfyGraphQLError = GraphQLError & IKeepfyError
 
 export const defaultKeepfyErrorTrusted: IKeepfyErrorTrusted = {
     type: 'UNKNOWN_ERROR',

@@ -1,6 +1,6 @@
-import { ApolloError } from 'apollo-client'
 import { ErrorResponse } from 'apollo-link-error'
-import { AllErrorTypes } from './types'
+import { AllErrorTypes, KeepfyGraphQLError } from './types'
+import { GraphQLError } from 'graphql'
 
 export type Severity =
     | 'fatal'
@@ -47,19 +47,24 @@ const typeToCapture: AllErrorTypes[] = [
 
 const captureGQLErrors = (
     sentry: SentryAdapter,
-    gqlErrors: ApolloError['graphQLErrors'],
+    gqlErrors: readonly GraphQLError[] | readonly KeepfyGraphQLError[],
     operationName?: string
 ) => {
     const title = operationName || 'GQL_UNKNOWN'
-    gqlErrors.forEach(gqlError => {
+
+    gqlErrors.forEach((gqlError: GraphQLError | KeepfyGraphQLError) => {
+        const code = 'code' in gqlError
+            ? gqlError.code
+            : gqlError.name
+
         sentry.setExtras({
-            Code: gqlError.code || null,
+            Code: code,
             Message: gqlError.message || null,
             Paths: (gqlError.path || []).join(',')
         })
 
         sentry.captureMessage(
-            `${title} - ${gqlError.code}`,
+            `${title} - ${code}`,
             'error'
         )
     })

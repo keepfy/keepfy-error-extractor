@@ -1,22 +1,15 @@
 import { ApolloError } from 'apollo-client'
 import {
     defaultKeepfyErrorTrusted,
-    IKeepfyError,
-    IKeepfyErrorTrusted
+    IKeepfyErrorTrusted,
+    KeepfyGraphQLError
 } from './types'
 
 const clientErrorFromMessage = (message: string): IKeepfyErrorTrusted => {
-    if (message.includes('Unexpected token')) {
-        return {
-            type: 'SERVICE_OFFLINE',
-            message: 'O serviço pode estar enfrentando problemas no momento'
-        }
-    }
-
-    if (message.includes('Network request failed')) {
+    if (/(Network)?\s?(request)?\s?(failed|errors?)?/gi.test(message)) {
         return {
             type: 'CONNECTION_FAILED',
-            message: 'Não foi possível conectar-se ao keepfy'
+            message: 'Não foi possível conectar-se ao Keepfy'
         }
     }
 
@@ -24,7 +17,7 @@ const clientErrorFromMessage = (message: string): IKeepfyErrorTrusted => {
     if (message.includes('Unknown argument')) {
         return {
             type: 'SCHEMA_UNKNOWN_FIELD',
-            message: 'Parece que seu app pode estar desatualizado'
+            message: 'Parece que seu Keepfy pode estar desatualizado'
         }
     }
 
@@ -32,16 +25,24 @@ const clientErrorFromMessage = (message: string): IKeepfyErrorTrusted => {
 }
 
 export const suggestionFromGraphQLError = (
-    graphQLError: ApolloError
+    apolloError: ApolloError
 ): IKeepfyErrorTrusted => {
-    if ('isTrusted' in graphQLError) {
-        const keepfyError = graphQLError as IKeepfyError
+    const [graphqlError = null] = apolloError.graphQLErrors as KeepfyGraphQLError[]
 
+    // only servers errors have the 'code'
+    if(graphqlError?.code) {
         return {
-            type: keepfyError.code,
-            message: keepfyError.message
+            type: graphqlError.code,
+            // if it is 'isTrusted', then it have a trusted message
+            message: graphqlError?.isTrusted
+                ? graphqlError.message
+                : defaultKeepfyErrorTrusted.message,
+            isClientFault: false
         }
     }
 
-    return clientErrorFromMessage(graphQLError.message)
+    return {
+        ...clientErrorFromMessage(apolloError.message),
+        isClientFault: true
+    }
 }
