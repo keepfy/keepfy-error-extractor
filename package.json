@@ -10,7 +10,9 @@
   },
   "author": "Gabriel Rohden",
   "license": "MIT",
-  "keywords": ["keepfy"],
+  "keywords": [
+    "keepfy"
+  ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint 'src/**/*.ts?(x)'",
@@ -26,10 +28,8 @@
     "eslint": "5.15.3",
     "eslint-config-keepfy": "6.0.0",
     "eslint-plugin-import": "2.17.2",
+    "graphql": "14.5.8",
     "typescript": "3.7.2",
     "yarn": "1.17.3"
-  },
-  "dependencies": {
-    "graphql": "^14.5.8"
   }
 }
