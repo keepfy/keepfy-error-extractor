@@ -1,6 +1,6 @@
 {
   "name": "@keepfy/error-extractor",
-  "version": "1.3.5",
+  "version": "2.0.0",
   "description": "An error extractor package for keepfy frontend apps",
   "main": "lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -10,7 +10,9 @@
   },
   "author": "Gabriel Rohden",
   "license": "MIT",
-  "keywords": ["keepfy"],
+  "keywords": [
+    "keepfy"
+  ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint 'src/**/*.ts?(x)'",
@@ -18,15 +20,16 @@
   },
   "peerDependencies": {
     "apollo-client": "^2.5.1",
-    "graphql": "^14.2.1"
+    "graphql": "^14.5.8"
   },
   "devDependencies": {
     "apollo-client": "2.5.1",
     "apollo-link-error": "1.1.11",
     "eslint": "5.15.3",
-    "eslint-config-keepfy": "5.0.1",
+    "eslint-config-keepfy": "6.0.0",
     "eslint-plugin-import": "2.17.2",
-    "typescript": "3.5.2",
+    "graphql": "14.5.8",
+    "typescript": "3.7.2",
     "yarn": "1.17.3"
   }
 }

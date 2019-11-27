@@ -1,8 +1,32 @@
-import { ApolloError } from 'apollo-client'
 import { ErrorResponse } from 'apollo-link-error'
-import { AllErrorTypes, SentryAdapter } from './types'
+import { AllErrorTypes, KeepfyGraphQLError } from './types'
+import { GraphQLError } from 'graphql'
 
-type NetworkError = {
+export type Severity =
+    | 'fatal'
+    | 'error'
+    | 'warning'
+    | 'log'
+    | 'info'
+    | 'debug'
+    | 'critical'
+
+export type SentryAdapter = {
+    captureException(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        exception: any
+    ): string
+    setExtras(extras: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [key: string]: any
+    }): void
+    captureMessage(
+        message: string,
+        level?: Severity
+    ): string
+}
+
+export type NetworkError = {
     message?: string
     statusCode: number
     result?: {
@@ -14,29 +38,33 @@ type NetworkError = {
     }
 }
 
-const typeToCapture = [
+const typeToCapture: AllErrorTypes[] = [
     'UNKNOWN_ERROR',
     'SCHEMA_UNKNOWN_FIELD',
     'INVALID_SUBSCRIPTION',
-    'INVALID_INPUT',
-    'INTERNAL_SERVER_ERROR'
-] as AllErrorTypes[]
+    'INVALID_INPUT'
+]
 
 const captureGQLErrors = (
     sentry: SentryAdapter,
-    gqlErrors: ApolloError['graphQLErrors'],
+    gqlErrors: readonly GraphQLError[] | readonly KeepfyGraphQLError[],
     operationName?: string
 ) => {
     const title = operationName || 'GQL_UNKNOWN'
-    gqlErrors.forEach(gqlError => {
+
+    gqlErrors.forEach((gqlError: GraphQLError | KeepfyGraphQLError) => {
+        const code = 'code' in gqlError
+            ? gqlError.code
+            : gqlError.name
+
         sentry.setExtras({
-            Code: gqlError.code || null,
+            Code: code,
             Message: gqlError.message || null,
             Paths: (gqlError.path || []).join(',')
         })
 
         sentry.captureMessage(
-            `${title} - ${gqlError.code}`,
+            `${title} - ${code}`,
             'error'
         )
     })

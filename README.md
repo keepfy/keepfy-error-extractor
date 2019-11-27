@@ -20,16 +20,17 @@ When instantiating apollo client, use it on the error
 handler:
 
 ```typescript
-import * as KeepfyErrorExtractor from 'keepfy-error-extractor'
+import * as KeepfyErrorExtractor from '@keepfy/error-extractor'
 import ApolloClient from 'apollo-client'
 
 // ...
 new ApolloClient({
     // ...
     onError: (error) => {
-        const type = KeepfyErrorExtractor.fromResponse(error)
+        const { type } =
+            KeepfyErrorExtractor.suggestionFromGraphQLError(error)
         
-        if(type === 'INVALID_TOKEN'){
+        if(type === 'INVALID_SESSION'){
           // do redirect to login emit
         }
     }
@@ -39,6 +40,25 @@ new ApolloClient({
 
 ```
 
+### Suggestions
+
+The package offers message suggestions (since not everyone will use the strings) separated
+you can easily get a suggestion like this:
+
+```typescript
+import * as KeepfyErrorExtractor from '@keepfy/error-extractor'
+import { ApolloError } from 'apollo-client'
+
+// from apollo error response
+
+mutate(...options)
+   .catch((error: ApolloError) => {
+        const { message } =
+            KeepfyErrorExtractor.suggestionFromGraphQLError(error)
+   
+        // do something with the error .message
+   })
+```
 
 ### Auto handle for sentry
 
@@ -55,11 +75,12 @@ const sentryForward = KeepfyErrorExtractor.forwardToSentry(Sentry)
 new ApolloClient({
     // ...
     onError: (error) => {
-        const type = KeepfyErrorExtractor.fromResponse(error)
+        const { type, message } =
+            KeepfyErrorExtractor.suggestionFromGraphQLError(error)
         
         sentryForward.captureIfNeeded(type, error)
 
-        if(type === 'INVALID_TOKEN'){
+        if(type === 'INVALID_SESSION'){
           // do redirect to login emit
         }
     }
@@ -71,7 +92,7 @@ new ApolloClient({
 
 Errors will be sent if the package decides that is needed,
 for example, `UNKNOWN_ERROR` are sent to sentry but
-`EMAIL_NOT_CONFIRMED` are not. You can always put your own
+`EMAIL_NOT_VERIFIED` are not. You can always put your own
 logic around the `captureIfNeeded` call to ignore stuff too.
 
 Note: the handler is made for us to be able to identify
@@ -84,27 +105,3 @@ instead, we specify an adapter with the common sentry methods
 (available at the types file, look for `SentryAdapter`), so
 if your sentry passed to the forward call doesn't type check,
 just write your adapter for it.
-
-### Suggestions
-
-The package offers message suggestions (since not everyone will use the strings) separated
-you can easily get a suggestion like this:
-
-```typescript
-import * as KeepfyErrorExtractor from '@keepfy/error-extractor'
-import { ApolloError } from 'apollo-client'
-
-const {
-    type,
-    message,
-    title
-} = KeepfyErrorExtractor.getSuggestion('UNKNOWN_ERROR')
-
-// or from apollo error response
-
-mutate(...options)
-   .catch((error: ApolloError) => {
-        const suggestion = KeepfyErrorExtractor.suggestionFromGraphQLError(error)
-         // do something with the error .message or .title
-   })
-```
