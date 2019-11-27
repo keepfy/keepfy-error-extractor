@@ -22,7 +22,7 @@ export type KeepfyErrorCode =
 export interface IKeepfyError {
     message: string
     code: KeepfyErrorCode
-    isTrusted?: boolean | undefined
+    isTrusted?: boolean
 }
 
 export type ClientErrorCode =

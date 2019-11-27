@@ -34,7 +34,7 @@ export const suggestionFromGraphQLError = (
         return {
             type: graphqlError.code,
             // if it is 'isTrusted', then it have a trusted message
-            message: graphqlError?.isTrusted
+            message: graphqlError.isTrusted
                 ? graphqlError.message
                 : defaultKeepfyErrorTrusted.message,
             isClientFault: false
