@@ -18,6 +18,7 @@ export type KeepfyErrorCode =
     | 'PAYMENT_DATA_INCONSISTENCY'
     | 'BUSINESS_ERROR'
     | 'INVALID_INPUT'
+    | 'DELETED_SESSION'
 
 export interface IKeepfyError {
     message: string
