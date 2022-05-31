@@ -19,6 +19,7 @@ export type KeepfyErrorCode =
     | 'BUSINESS_ERROR'
     | 'INVALID_INPUT'
     | 'DELETED_SESSION'
+    | 'MINIMUM_PASSWORD_ERROR'
 
 export interface IKeepfyError {
     message: string
