@@ -1,6 +1,6 @@
 {
-  "name": "@keepfy/error-extractor",
-  "version": "2.0.2",
+  "name": "keepfy-error-extractor",
+  "version": "2.0.3",
   "description": "An error extractor package for keepfy frontend apps",
   "main": "lib/index.js",
   "typings": "./lib/index.d.ts",
